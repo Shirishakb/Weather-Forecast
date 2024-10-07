@@ -1,5 +1,7 @@
 // TODO: Define a City class with name and id properties
 class City {
+    name: string;
+    id: string;
     constructor(name, id) {
         this.name = name;
         this.id = id;
