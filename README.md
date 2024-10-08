@@ -1,5 +1,9 @@
 # 09 Servers and APIs: Weather Dashboard
 
+Deployed application:
+
+https://shirishakb.github.io/Weather-forecast/
+
 ## Your Task
 
 External APIs allow developers to access their data and functionality by making requests with specific parameters to a URL. Developers are often tasked with retrieving data from another application's API and using it in their context, frequently consuming this data via a server.
