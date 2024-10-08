@@ -8,31 +8,43 @@
     "id": "2"
   },
   {
-    "name": "Greensboro",
-    "id": "8"
-  },
-  {
-    "name": "georgia",
-    "id": "10"
-  },
-  {
     "name": "atlanta",
     "id": "18"
   },
   {
-    "name": "atlanta",
-    "id": "7"
-  },
-  {
-    "name": "atlanta",
-    "id": "8"
+    "name": "st. petersburg",
+    "id": "12"
   },
   {
     "name": "North Carolina",
-    "id": "8"
+    "id": "13"
+  },
+  {
+    "name": "dallas",
+    "id": "15"
+  },
+  {
+    "name": "florida",
+    "id": "10"
+  },
+  {
+    "name": "san diego",
+    "id": "9"
+  },
+  {
+    "name": "texas",
+    "id": "10"
   },
   {
     "name": "atlanta",
-    "id": "9"
+    "id": "10"
+  },
+  {
+    "name": "florida",
+    "id": "11"
+  },
+  {
+    "name": "high point",
+    "id": "12"
   }
 ]

@@ -29,8 +29,8 @@ class Weather {
   city!: string;
   date!: string;
   description!: string;
-  temp!: number;
-  feelsLike!: number;
+  temp!: number; // Temperature in Fahrenheit
+  feelsLike!: number; // Feels like temperature in Fahrenheit
   humidity!: number;
   windSpeed!: number;
   uvIndex!: number;
@@ -47,8 +47,8 @@ class WeatherService {
 
   // Fetch location data by city name
   private async fetchLocationData(query: string): Promise<WeatherApiResponse> {
-    const url = `${this.baseURL}weather?q=${query}&appid=${this.apiKey}&units=metric`;
-    console.log(`Fetching location data from: ${url}`);
+    const url = `${this.baseURL}weather?q=${query}&appid=${this.apiKey}`;
+    //console.log(`Fetching location data from: ${url}`);
 
     const response = await fetch(url);
     const data = (await response.json()) as WeatherApiResponse;
@@ -64,7 +64,7 @@ class WeatherService {
 
   // Destructure coordinates from location data
   private destructureLocationData(locationData: WeatherApiResponse): Coordinates {
-    console.log('Destructuring location data:', locationData); // Debugging
+    //console.log('Destructuring location data:', locationData); // Debugging
     return {
       lat: locationData.coord.lat,
       lon: locationData.coord.lon,
@@ -73,7 +73,7 @@ class WeatherService {
 
   // Build URL for weather data using coordinates
   private buildWeatherQuery(coordinates: Coordinates): string {
-    return `${this.baseURL}forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${this.apiKey}&units=metric`;
+    return `${this.baseURL}forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${this.apiKey}&units=imperial`; // Change to imperial for Fahrenheit
   }
 
   // Fetch coordinates by city name
@@ -94,10 +94,10 @@ class WeatherService {
     const data = (await response.json()) as WeatherApiResponse;
     
     // Log raw weather data for debugging
-    console.log('Raw weather data:', JSON.stringify(data, null, 2));
+    //console.log('Raw weather data:', JSON.stringify(data, null, 2));
 
     if (!response.ok) {
-      console.error('Error fetching weather data:', data);
+      //console.error('Error fetching weather data:', data);
       throw new Error('Error fetching weather data');
     }
 
@@ -111,7 +111,7 @@ class WeatherService {
   // Parse current weather data from the forecast API
   private parseCurrentWeather(response: WeatherApiResponse): Weather {
     const weather = new Weather();
-    console.log('Parsing current weather data:', response);
+    //console.log('Parsing current weather data:', response);
 
     // Using the first entry for the "current" weather data
     const currentWeather = response.list[0];
@@ -120,13 +120,15 @@ class WeatherService {
       throw new Error('Invalid weather data structure: missing current weather data');
     }
 
+    //console.log('Current weather:', JSON.stringify(currentWeather.main)); // Debugging
+
     weather.city = this.cityName;
     weather.date = new Date(currentWeather.dt * 1000).toLocaleDateString(); // Format the date
     weather.description = currentWeather.weather[0]?.description || 'No description available';
     
-    // Ensure temperature values are defined
-    weather.temp = currentWeather.main.temp !== undefined ? currentWeather.main.temp : -999; // Set a sentinel value for debugging
-    weather.feelsLike = currentWeather.main.feels_like !== undefined ? currentWeather.main.feels_like : -999;
+    // Ensure temperature values are defined and converted to Fahrenheit
+    weather.temp = currentWeather.main.temp !== undefined ? currentWeather.main.temp : -999; // Temperature in Fahrenheit
+    weather.feelsLike = currentWeather.main.feels_like !== undefined ? currentWeather.main.feels_like : -999; // Feels like temperature in Fahrenheit
     weather.humidity = currentWeather.main.humidity !== undefined ? currentWeather.main.humidity : -999;
     weather.windSpeed = currentWeather.wind.speed !== undefined ? currentWeather.wind.speed : -999;
     
@@ -134,9 +136,6 @@ class WeatherService {
     weather.sunrise = 'Not available'; // Sunrise/sunset not available in forecast
     weather.sunset = 'Not available';
     weather.icon = currentWeather.weather[0]?.icon || '01d'; // Default icon if missing
-
-    // Log temperature for debugging
-    console.log('Parsed current weather temp:', weather.temp); // Debug temperature
 
     return weather;
   }
@@ -154,9 +153,9 @@ class WeatherService {
       weather.date = new Date(data.dt * 1000).toLocaleDateString(); // Format the date
       weather.description = data.weather?.[0]?.description || 'No description';
       
-      // Ensure temperature values are defined
-      weather.temp = data.main.temp !== undefined ? data.main.temp : -999; // Set a sentinel value for debugging
-      weather.feelsLike = data.main.feels_like !== undefined ? data.main.feels_like : -999;
+      // Ensure temperature values are defined and converted to Fahrenheit
+      weather.temp = data.main.temp !== undefined ? data.main.temp : -999; // Temperature in Fahrenheit
+      weather.feelsLike = data.main.feels_like !== undefined ? data.main.feels_like : -999; // Feels like temperature in Fahrenheit
       weather.humidity = data.main.humidity !== undefined ? data.main.humidity : -999;
       weather.windSpeed = data.wind.speed !== undefined ? data.wind.speed : -999;
       
@@ -175,10 +174,10 @@ class WeatherService {
 
     try {
       const coordinates = await this.fetchAndDestructureLocationData();
-      console.log('Fetched coordinates:', coordinates);
+      //console.log('Fetched coordinates:', coordinates);
 
       const weatherData = await this.fetchWeatherData(coordinates);
-      console.log('Fetched weather data:', weatherData);
+      //console.log('Fetched weather data:', weatherData);
 
       const currentWeather = this.parseCurrentWeather(weatherData);
       const forecast = this.buildForecastArray(weatherData.list);

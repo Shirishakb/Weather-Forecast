@@ -9,7 +9,7 @@ interface Weather {
   date: string;
   icon: string;
   iconDescription: string;
-  tempF: number;
+  temp: number;
   windSpeed: number;
   humidity: number;
 }
@@ -100,7 +100,7 @@ const deleteCityFromHistory = async (id: string) => {
 
 /* Render Functions */
 const renderCurrentWeather = (currentWeather: Weather): void => {
-  const { city, date, icon, iconDescription, tempF, windSpeed, humidity } = currentWeather;
+  const { city, date, icon, iconDescription, temp, windSpeed, humidity } = currentWeather;
 
   // Format the date
   const formattedDate = formatDate(date);
@@ -110,7 +110,7 @@ const renderCurrentWeather = (currentWeather: Weather): void => {
   weatherIcon.setAttribute('alt', iconDescription);
   weatherIcon.setAttribute('class', 'weather-img');
 
-  tempEl.textContent = `Temp: ${tempF}°F`;
+  tempEl.textContent = `Temp: ${temp}°F`;
   windEl.textContent = `Wind: ${windSpeed} MPH`;
   humidityEl.textContent = `Humidity: ${humidity} %`;
 
@@ -133,7 +133,7 @@ const renderForecast = (forecast: Weather[]): void => {
 };
 
 const renderForecastCard = (forecast: Weather) => {
-  const { date, icon, iconDescription, tempF, windSpeed, humidity } = forecast;
+  const { date, icon, iconDescription, temp, windSpeed, humidity } = forecast;
 
   const { col, cardTitle, weatherIcon, tempEl, windEl, humidityEl } = createForecastCard();
 
@@ -144,7 +144,7 @@ const renderForecastCard = (forecast: Weather) => {
   cardTitle.textContent = formattedDate;
   weatherIcon.setAttribute('src', `https://openweathermap.org/img/w/${icon}.png`);
   weatherIcon.setAttribute('alt', iconDescription);
-  tempEl.textContent = `Temp: ${tempF} °F`;
+  tempEl.textContent = `Temp: ${temp} °F`;
   windEl.textContent = `Wind: ${windSpeed} MPH`;
   humidityEl.textContent = `Humidity: ${humidity} %`;
 
