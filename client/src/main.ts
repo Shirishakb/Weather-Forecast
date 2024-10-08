@@ -35,39 +35,62 @@ API Calls
 */
 
 const fetchWeather = async (cityName: string) => {
-  const response = await fetch('/api/weather/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ cityName }),
-  });
+  try {
+    const response = await fetch('/api/weather/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ cityName }),
+    });
 
-  const weatherData = await response.json();
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
 
-  console.log('weatherData: ', weatherData);
+    const weatherData = await response.json();
+    console.log('weatherData: ', weatherData);
 
-  renderCurrentWeather(weatherData[0]);
-  renderForecast(weatherData.slice(1));
+    renderCurrentWeather(weatherData[0]);
+    renderForecast(weatherData.slice(1));
+  } catch (error) {
+    console.error('Error fetching weather:', error);
+    alert('Failed to fetch weather data. Please try again.');
+  }
 };
 
 const fetchSearchHistory = async () => {
-  const history = await fetch('/api/weather/history', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  return history;
+  try {
+    const history = await fetch('/api/weather/history', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!history.ok) {
+      throw new Error(`HTTP error! Status: ${history.status}`);
+    }
+
+    return history.json(); // Return the JSON directly
+  } catch (error) {
+    console.error('Error fetching search history:', error);
+    alert('Failed to fetch search history. Please try again.');
+  }
 };
 
 const deleteCityFromHistory = async (id: string) => {
-  await fetch(`/api/weather/history/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  try {
+    await fetch(`/api/weather/history/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (error) {
+    console.error('Error deleting city from history:', error);
+    alert('Failed to delete city from history. Please try again.');
+  }
 };
 
 /*
@@ -80,7 +103,6 @@ const renderCurrentWeather = (currentWeather: any): void => {
   const { city, date, icon, iconDescription, tempF, windSpeed, humidity } =
     currentWeather;
 
-  // convert the following to typescript
   heading.textContent = `${city} (${date})`;
   weatherIcon.setAttribute(
     'src',
@@ -140,7 +162,7 @@ const renderForecastCard = (forecast: any) => {
 };
 
 const renderSearchHistory = async (searchHistory: any) => {
-  const historyList = await searchHistory.json();
+  const historyList = await searchHistory;
 
   if (searchHistoryContainer) {
     searchHistoryContainer.innerHTML = '';
@@ -212,6 +234,14 @@ const createHistoryButton = (city: string) => {
   return btn;
 };
 
+const handleDeleteHistoryClick = async (event: Event): Promise<void> => {
+  const target = event.target as HTMLButtonElement;
+  const city = JSON.parse(target.dataset.city || '{}');
+  await deleteCityFromHistory(city.id);
+  const searchHistory = await fetchSearchHistory();
+  renderSearchHistory(searchHistory);
+};
+
 const createDeleteButton = () => {
   const delBtnEl = document.createElement('button');
   delBtnEl.setAttribute('type', 'button');
@@ -249,43 +279,19 @@ Event Handlers
 
 */
 
-const handleSearchFormSubmit = (event: any): void => {
+const handleSearchFormSubmit = (event: Event): void => {
   event.preventDefault();
 
   if (!searchInput.value) {
-    throw new Error('City cannot be blank');
+    alert('City cannot be blank');
+    return; // Stop execution if no input
   }
 
   const search: string = searchInput.value.trim();
-  fetchWeather(search).then(() => {
-    getAndRenderHistory();
+   fetchWeather(search).then(() => {
+    searchInput.value = ''; // Clear input field
   });
-  searchInput.value = '';
 };
 
-const handleSearchHistoryClick = (event: any) => {
-  if (event.target.matches('.history-btn')) {
-    const city = event.target.textContent;
-    fetchWeather(city).then(getAndRenderHistory);
-  }
-};
+searchForm.addEventListener('submit', handleSearchFormSubmit);
 
-const handleDeleteHistoryClick = (event: any) => {
-  event.stopPropagation();
-  const cityID = JSON.parse(event.target.getAttribute('data-city')).id;
-  deleteCityFromHistory(cityID).then(getAndRenderHistory);
-};
-
-/*
-
-Initial Render
-
-*/
-
-const getAndRenderHistory = () =>
-  fetchSearchHistory().then(renderSearchHistory);
-
-searchForm?.addEventListener('submit', handleSearchFormSubmit);
-searchHistoryContainer?.addEventListener('click', handleSearchHistoryClick);
-
-getAndRenderHistory();

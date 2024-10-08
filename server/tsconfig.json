@@ -1,34 +1,11 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "Node", // Use Node to resolve modules
-    "allowJs": true,
-    "checkJs": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitReturns": true,
-    "noImplicitOverride": true,
-    "useUnknownInCatchVariables": true,
-    "skipLibCheck": true,
-    "baseUrl": "./", // Base URL for module resolution
-    "paths": {
-      "*": ["node_modules/*", "src/types/*"] // Path mapping if needed
-    }
+    /* Modules */
+    "rootDir": "src" /* Specify the root folder within your source files. */,
+    /* Emit */
+    "outDir": "dist" /* Specify an output folder for all emitted files. */
+    // "noEmitOnError": true /* Disable emitting files if any type checking errors are reported. */
   },
-  "include": [
-    "*.ts",  // Include TypeScript files in the root
-    "api/**/*.ts", // Include TypeScript files in the api folder
-    "routes/**/*.ts" // Include TypeScript files in the routes folder
-  ],
-  "exclude": [
-    "node_modules" // Exclude node_modules
-  ]
+  "include": ["src"]
 }
